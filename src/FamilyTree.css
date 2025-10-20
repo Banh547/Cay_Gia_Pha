@@ -1,0 +1,97 @@
+.tree-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  overflow-x: auto;
+}
+
+.member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 15px;
+  position: relative;
+}
+
+/* --- PHẦN CSS MỚI VÀ CẬP NHẬT --- */
+
+/* 1. Div chứa các cặp vợ chồng */
+.parents {
+  display: flex;
+  position: relative;
+}
+
+/* 2. Đường kẻ nối giữa vợ và chồng */
+.parents > .person + .person::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 10px); /* Căn vào giữa khoảng trống */
+  top: 50%;
+  width: 20px; /* Độ dài đường kẻ nối */
+  border-top: 2px solid #bdc3c7;
+}
+
+/* 3. Mỗi khối thông tin (cha, mẹ, con) */
+.person {
+  border: 2px solid #3498db;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: white;
+  text-align: center;
+  min-width: 140px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+/* Tạo khoảng cách giữa vợ và chồng */
+.person.spouse {
+  margin-left: 20px;
+}
+
+.name {
+  font-weight: bold;
+}
+
+/* --- PHẦN CSS CHO CON CÁI --- */
+
+.children {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  position: relative;
+}
+
+/* Đường nối dọc từ nhóm cha mẹ xuống nhóm con cái */
+.children::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%; 
+  border-left: 2px solid #bdc3c7;
+  width: 0;
+  height: 40px;
+}
+
+/* Đường nối ngang cho các con */
+.member::before,
+.member::after {
+  content: '';
+  position: absolute;
+  top: -20px; 
+  right: 50%;
+  border-top: 2px solid #bdc3c7;
+  width: 50%;
+  height: 20px;
+}
+
+.member::after {
+  right: auto;
+  left: 50%;
+  border-left: 2px solid #bdc3c7;
+}
+
+/* Ẩn các đường nối thừa ở đầu và cuối */
+.children > .member:first-child::before,
+.children > .member:last-child::after {
+  display: none;
+}
