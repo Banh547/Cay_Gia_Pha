@@ -30,7 +30,7 @@ const HomePage = ({ onLogout }) => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [modalMode, setModalMode] = useState(null);
 
-  const familyTrees = useMemo(() => {
+  const familyTree = useMemo(() => {
     const findPersonById = (id) => personals.find(p => p.personal_id === id);
     const findSpouses = (personId) => {
       return marriages
@@ -55,9 +55,16 @@ const HomePage = ({ onLogout }) => {
       };
     };
 
-    const allChildIds = new Set(parentChilds.map(pc => pc.child_id));
-    const rootPersons = personals.filter(p => !allChildIds.has(p.personal_id));
-    return rootPersons.map(root => buildTreeRecursive(root));
+    // --- THAY ĐỔI LOGIC TÌM GỐC ---
+    // 1. Chỉ định ID của người gốc mà bạn muốn hiển thị
+    const ROOT_PERSON_ID = 1; // ID của "Ông Nội"
+    
+    // 2. Tìm người gốc đó
+    const rootPerson = findPersonById(ROOT_PERSON_ID);
+    
+    // 3. Xây dựng cây duy nhất từ người gốc này
+    return buildTreeRecursive(rootPerson);
+
   }, [personals, marriages, parentChilds]);
 
   const handleMemberClick = (personNode) => {
@@ -100,6 +107,7 @@ const HomePage = ({ onLogout }) => {
   };
 
   const handleAddNewPerson = (newPersonData) => {
+    // Với logic mới, hàm này chỉ thêm người vào danh sách, họ sẽ không hiển thị trừ khi được liên kết
     const newPerson = { ...newPersonData, personal_id: Date.now(), family_id: 1 };
     setPersonals(prev => [...prev, newPerson]);
   };
@@ -115,9 +123,8 @@ const HomePage = ({ onLogout }) => {
       <Header onLogout={onLogout} onAddNewPerson={() => setModalMode('addRootPerson')} />
       <div style={{ display: 'flex', height: 'calc(100vh - 70px)' }}>
         <div style={{ flex: 1, overflow: 'auto', display: 'flex', alignItems: 'flex-start', gap: '50px', padding: '20px' }}>
-          {familyTrees.map(tree => (
-            tree && <FamilyTree key={tree.id} data={tree} onMemberClick={handleMemberClick} />
-          ))}
+          {/* Chỉ hiển thị một cây duy nhất */}
+          {familyTree && <FamilyTree data={familyTree} onMemberClick={handleMemberClick} />}
         </div>
         <MemberDetails 
           person={selectedMember} 
